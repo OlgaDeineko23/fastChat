@@ -1,0 +1,27 @@
+{
+  "name": "fastchat",
+  "version": "0.0.1",
+  "description": "Fastchat + Smooch.io",
+  "engines": {
+    "node": "8.10.0"
+  },
+  "index": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "cacheDirectories": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "smooch": "^4.3.2",
+    "smooch-core": "^4.3.0"
+  },
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  }
+}
