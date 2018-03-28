@@ -11,57 +11,82 @@ dotenv.load();
 const PORT = process.env.PORT || 5000;
 const SMOOCH_KEY_ID = process.env.REACT_APP_SMOOCH_KEY_ID;
 const SMOOCH_SECRET = process.env.REACT_APP_SMOOCH_SECRET;
+const SMOOCH_APP_ID = process.env.REACT_APP_SMOOCH_ID;
 
 
 const smooch = new Smooch({
-  keyId: SMOOCH_KEY_ID,
-  secret: SMOOCH_SECRET,
-  scope: 'app',
+    keyId: SMOOCH_KEY_ID,
+    secret: SMOOCH_SECRET,
+    scope: 'app',
 });
 
 // express server
 const app = express();
 const server = require('http').Server(app);
+var io = require('socket.io')(server);
 app.use(express.static(path.resolve(__dirname, './build')));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({ origin: '*' }));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(cors({origin: '*'}));
+
+app.get('/messages', (req, res) => {
+    smooch.webhooks.list(SMOOCH_APP_ID).then((response) => {
+        res.json(response);
+    });
+});
+
+app.post('/message', (req, res) => {
+    const message = req.body.message;
+    const userId = req.body.userId;
+    console.log(message, userId, req.body)
+    if (!userId) return;
+    const request = {
+        type: 'text',
+        text: message,
+        name: 'Test Agent',
+        role: 'appMaker',
+        metadata: {lang: 'en-ca', items: 3},
+    };
+    smooch.appUsers.sendMessage(userId, request).then(response => {
+        res.send(response);
+    });
+});
 
 // GET smooch appuser
 app.get('/api/user/:userId', (req, res) => {
-  const userId = req.params.userId;
-  if (!userId) return;
-  smooch.appUsers
-    .get(userId)
-    .then(response => {
-      res.json(response);
-    })
-    .catch(err => {
-      console.log('API ERROR:\n', err);
-      res.status(404).json({
-        error: err.description,
-        status: err.response.status,
-        statusText: err.response.statusText,
-      });
-    });
+    const userId = req.params.userId;
+    if (!userId) return;
+    smooch.appUsers
+        .get(userId)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            console.log('API ERROR:\n', err);
+            res.status(404).json({
+                error: err.description,
+                status: err.response.status,
+                statusText: err.response.statusText,
+            });
+        });
 });
 
 // POST smooch message
 app.post('/api/message', (req, res) => {
-  const message = req.body.message;
-  const userId = req.body.userId;
-  console.log(message, userId, req.body)
-  if (!userId) return;
-  const request = {
-    type: 'text',
-    text: message,
-    name: 'Test Agent',
-    role: 'appMaker',
-    metadata: { lang: 'en-ca', items: 3 },
-  };
-  smooch.appUsers.sendMessage(userId, request).then(response => {
-    res.send(response);
-  });
+    const message = req.body.message;
+    const userId = req.body.userId;
+    console.log(message, userId, req.body)
+    if (!userId) return;
+    const request = {
+        type: 'text',
+        text: message,
+        name: 'Test Agent',
+        role: 'appMaker',
+        metadata: {lang: 'en-ca', items: 3},
+    };
+    smooch.appUsers.sendMessage(userId, request).then(response => {
+        res.send(response);
+    });
 });
 
 // GET smooch message
@@ -80,17 +105,18 @@ app.get('/api/messages/:userId', (req, res) => {
     });
 });
 
-
-app.get('*', function(request, response) {
-  response.sendFile(path.resolve(__dirname, './build', 'index.html'));
+app.get('/test', (req, res) => {
+    res.send(response);
+});
+app.post('/test', (req, res) => {
+    res.send(response);
 });
 
-server.listen(PORT, function() {
-  console.log(`Server listening on port ${PORT}`);
+
+app.get('*', function (request, response) {
+    response.sendFile(path.resolve(__dirname, './build', 'index.html'));
 });
-// const express = require('express');
-// const app = express();
-//
-// app.get('/', (req, res) => res.send('Hello World!'));
-//
-// app.listen(3000, () => console.log('Example app listening on port 3000!'));
+
+server.listen(PORT, function () {
+    console.log(`Server listening on port ${PORT}`);
+});
