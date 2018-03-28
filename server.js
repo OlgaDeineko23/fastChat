@@ -29,12 +29,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors({origin: '*'}));
 
-app.get('/messages', (req, res) => {
-    smooch.webhooks.get(SMOOCH_APP_ID).then((response) => {
-        res.send(response);
-    });
-});
-
 app.post('/message', (req, res) => {
     const message = req.body.message;
     const userId = req.body.userId;
@@ -72,22 +66,22 @@ app.get('/api/user/:userId', (req, res) => {
 });
 
 // POST smooch message
-app.post('/api/message', (req, res) => {
-    const message = req.body.message;
-    const userId = req.body.userId;
-    console.log(message, userId, req.body)
-    if (!userId) return;
-    const request = {
-        type: 'text',
-        text: message,
-        name: 'Test Agent',
-        role: 'appMaker',
-        metadata: {lang: 'en-ca', items: 3},
-    };
-    smooch.appUsers.sendMessage(userId, request).then(response => {
-        res.send(response);
-    });
-});
+// app.post('/api/message', (req, res) => {
+//     const message = req.body.message;
+//     const userId = req.body.userId;
+//     console.log(message, userId, req.body)
+//     if (!userId) return;
+//     const request = {
+//         type: 'text',
+//         text: message,
+//         name: 'Test Agent',
+//         role: 'appMaker',
+//         metadata: {lang: 'en-ca', items: 3},
+//     };
+//     smooch.appUsers.sendMessage(userId, request).then(response => {
+//         res.send(response);
+//     });
+// });
 
 // GET smooch message
 app.get('/api/messages/:userId', (req, res) => {
