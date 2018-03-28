@@ -19,7 +19,7 @@ const smooch = new Smooch({
   scope: 'app',
 });
 
-//test
+//testnpm
 
 // express server
 const app = express();
