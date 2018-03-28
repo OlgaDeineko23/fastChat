@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors({origin: '*'}));
 
 app.get('/messages', (req, res) => {
-    smooch.webhooks.list(SMOOCH_APP_ID).then((response) => {
+    smooch.webhooks.get(SMOOCH_APP_ID).then((response) => {
         res.send(response);
     });
 });
