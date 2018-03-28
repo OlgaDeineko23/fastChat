@@ -19,8 +19,6 @@ const smooch = new Smooch({
   scope: 'app',
 });
 
-//testnpm
-
 // express server
 const app = express();
 const server = require('http').Server(app);

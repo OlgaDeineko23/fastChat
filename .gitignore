@@ -3,6 +3,8 @@
 .idea
 node_modules
 
+# logs
+log
 
 # build files
 dist

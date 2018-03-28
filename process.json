@@ -1,0 +1,19 @@
+{
+  "apps": [
+    {
+      "name": "fastchat",
+      "script": "./server.js",
+      "instances": 1,
+      "exec_mode": "cluster",
+      "max_memory_restart": "2G",
+      "error_file": "./log/pm2-errors.log",
+      "out_file": "./log/pm2-out.log",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
