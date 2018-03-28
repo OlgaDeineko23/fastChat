@@ -31,7 +31,7 @@ app.use(cors({origin: '*'}));
 
 app.get('/messages', (req, res) => {
     smooch.webhooks.list(SMOOCH_APP_ID).then((response) => {
-        res.json(response);
+        res.send(response);
     });
 });
 
