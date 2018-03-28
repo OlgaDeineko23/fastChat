@@ -8,19 +8,20 @@
   "index": "server.js",
   "scripts": {
     "start:dev": "node server.js",
-    "start:prod": "pm2 start process.json"
+    "start:prod": "npm install && pm2 start process.json",
+    "restart:prod": "npm install && pm2 reload all",
+    "stop:prod": "pm2 stop all"
   },
   "cacheDirectories": [
     "node_modules"
   ],
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "dotenv": "^4.0.0",
-    "express": "^4.16.2",
-    "smooch": "^4.3.2",
-    "smooch-core": "^4.3.0",
-    "socket.io": "^2.0.4"
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "cors": "2.8.4",
+    "dotenv": "4.0.0",
+    "smooch": "4.3.2",
+    "smooch-core": "4.3.0"
   },
   "proxy": "http://localhost:5000",
   "devDependencies": {
