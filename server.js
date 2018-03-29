@@ -122,11 +122,6 @@ app.post('/test', (req, res) => {
     res.send(response);
 });
 
-
-app.get('*', function (request, response) {
-    response.sendFile(path.resolve(__dirname, './build', 'index.html'));
-});
-
 server.listen(PORT, function () {
     console.log(`Server listening on port ${PORT}`);
 });
