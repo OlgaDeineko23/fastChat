@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
       io.emit('message', {type:'new-message', text: message});
   });
   socket.on('add-message', (message) => {
-    app.post('/message', (req, res) => {
+    app.post('/api/message', (req, res) => {
       const message = req.body.message;
       io.emit('message', {type:'new-message', text: req.body.messages[0]});
       const userId = req.body.userId;
