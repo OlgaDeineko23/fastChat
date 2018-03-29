@@ -36,32 +36,33 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 
-  socket.on('add-message', (message) => {
-      io.emit('message', {type:'new-message', text: message});
-  });
-  socket.on('add-message', (message) => {
-    app.post('/message', (req, res) => {
-      const message = req.body.message;
-      io.emit('message', {type:'new-message', text: req.body.messages[0]});
-      const userId = req.body.userId;
-      console.log(message, userId, req.body);
-      if (!userId) return;
-      const request = {
-        type: 'text',
-        text: message,
-        name: 'Test Agent',
-        role: 'appMaker',
-        metadata: {lang: 'en-ca', items: 3},
-      };
-      smooch.appUsers.sendMessage(userId, request).then(response => {
-        res.send(response);
-      });
-    });
-      io.emit('message', {type:'new-message', text: message});
-  });
+  // socket.on('add-message', (message) => {
+  //     io.emit('message', {type:'new-message', text: message});
+  // });
+  // socket.on('add-message', (message) => {
+  //   app.post('/message', (req, res) => {
+  //     const message = req.body.message;
+  //     io.emit('message', {type:'new-message', text: req.body.messages[0]});
+  //     const userId = req.body.userId;
+  //     console.log(message, userId, req.body);
+  //     if (!userId) return;
+  //     const request = {
+  //       type: 'text',
+  //       text: message,
+  //       name: 'Test Agent',
+  //       role: 'appMaker',
+  //       metadata: {lang: 'en-ca', items: 3},
+  //     };
+  //     smooch.appUsers.sendMessage(userId, request).then(response => {
+  //       res.send(response);
+  //     });
+  //   });
+  //     io.emit('message', {type:'new-message', text: message});
+  // });
 });
 
 app.post('/message', (req, res) => {
+    io.emit('message', {type:'new-message', text: req.body.messages[0]});
     const message = req.body.message;
     const userId = req.body.userId;
     console.log(message, userId, req.body);
