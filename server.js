@@ -23,28 +23,44 @@ const smooch = new Smooch({
 // express server
 const app = express();
 const server = require('http').Server(app);
-var io = require('socket.io')(server);
+let io = require('socket.io')(server);
 app.use(express.static(path.resolve(__dirname, './build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors({origin: '*'}));
 
-app.post('/message', (req, res) => {
-    const message = req.body.message;
-    const userId = req.body.userId;
-    console.log(message, userId, req.body)
-    if (!userId) return;
-    const request = {
+io.on('connection', (socket) => {
+  console.log('user connected');
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
+  socket.on('add-message', (message) => {
+      io.emit('message', {type:'new-message', text: message});
+  });
+  socket.on('add-message', (message) => {
+    app.post('/message', (req, res) => {
+      const message = req.body.message;
+      io.emit('message', {type:'new-message', text: req.body.messages[0]});
+      const userId = req.body.userId;
+      console.log(message, userId, req.body);
+      if (!userId) return;
+      const request = {
         type: 'text',
         text: message,
         name: 'Test Agent',
         role: 'appMaker',
         metadata: {lang: 'en-ca', items: 3},
-    };
-    smooch.appUsers.sendMessage(userId, request).then(response => {
+      };
+      smooch.appUsers.sendMessage(userId, request).then(response => {
         res.send(response);
+      });
     });
+      io.emit('message', {type:'new-message', text: message});
+  });
 });
+
 
 // GET smooch appuser
 app.get('/api/user/:userId', (req, res) => {
@@ -104,11 +120,6 @@ app.get('/test', (req, res) => {
 });
 app.post('/test', (req, res) => {
     res.send(response);
-});
-
-
-app.get('*', function (request, response) {
-    response.sendFile(path.resolve(__dirname, './build', 'index.html'));
 });
 
 server.listen(PORT, function () {
