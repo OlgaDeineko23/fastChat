@@ -8,7 +8,7 @@ const cors = require('cors');
 dotenv.config();
 dotenv.load();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 const SMOOCH_KEY_ID = process.env.REACT_APP_SMOOCH_KEY_ID;
 const SMOOCH_SECRET = process.env.REACT_APP_SMOOCH_SECRET;
 const SMOOCH_APP_ID = process.env.REACT_APP_SMOOCH_ID;
@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
       io.emit('message', {type:'new-message', text: message});
   });
   socket.on('add-message', (message) => {
-    app.post('/api/message', (req, res) => {
+    app.post('/message', (req, res) => {
       const message = req.body.message;
       io.emit('message', {type:'new-message', text: req.body.messages[0]});
       const userId = req.body.userId;
@@ -61,6 +61,22 @@ io.on('connection', (socket) => {
   });
 });
 
+app.post('/message', (req, res) => {
+    const message = req.body.message;
+    const userId = req.body.userId;
+    console.log(message, userId, req.body);
+    if (!userId) return;
+    const request = {
+        type: 'text',
+        text: message,
+        name: 'Test Agent',
+        role: 'appMaker',
+        metadata: {lang: 'en-ca', items: 3},
+    };
+    smooch.appUsers.sendMessage(userId, request).then(response => {
+        res.send(response);
+    });
+});
 
 // GET smooch appuser
 app.get('/api/user/:userId', (req, res) => {
@@ -81,24 +97,6 @@ app.get('/api/user/:userId', (req, res) => {
         });
 });
 
-// POST smooch message
-// app.post('/api/message', (req, res) => {
-//     const message = req.body.message;
-//     const userId = req.body.userId;
-//     console.log(message, userId, req.body)
-//     if (!userId) return;
-//     const request = {
-//         type: 'text',
-//         text: message,
-//         name: 'Test Agent',
-//         role: 'appMaker',
-//         metadata: {lang: 'en-ca', items: 3},
-//     };
-//     smooch.appUsers.sendMessage(userId, request).then(response => {
-//         res.send(response);
-//     });
-// });
-
 // GET smooch message
 app.get('/api/messages/:userId', (req, res) => {
     const userId = req.params.userId;
@@ -115,11 +113,8 @@ app.get('/api/messages/:userId', (req, res) => {
     });
 });
 
-app.get('/test', (req, res) => {
-    res.send(response);
-});
-app.post('/test', (req, res) => {
-    res.send(response);
+app.get('*', function (request, response) {
+    response.sendFile(path.resolve(__dirname, './build', 'index.html'));
 });
 
 server.listen(PORT, function () {
