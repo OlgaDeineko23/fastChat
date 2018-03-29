@@ -8,7 +8,7 @@ const cors = require('cors');
 dotenv.config();
 dotenv.load();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 5000;
 const SMOOCH_KEY_ID = process.env.REACT_APP_SMOOCH_KEY_ID;
 const SMOOCH_SECRET = process.env.REACT_APP_SMOOCH_SECRET;
 const SMOOCH_APP_ID = process.env.REACT_APP_SMOOCH_ID;
